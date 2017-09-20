@@ -3,22 +3,25 @@ using System;
 
 namespace Chapter01
 {
-    public class Q1_04_Palindrome_Permutation : Question
+    public class Q1_04_Palindrome_Permutation : IQuestion
     {
         public static int GetCharNumber(char c)
         {
-            var val = char.ToLower(c) - 'a';
-            if (0 <= val && val <= 25)
+            var a = (int)'a';
+            var z = (int)'z';
+
+            var val = (int)c;
+            if (a <= val && val <= z)
             {
-                return val;
+                return val - a;
             }
             return -1;
         }
 
         public static int[] BuildCharFrequencyTable(String phrase)
         {
-            int[] table = new int[26];
-            foreach (char c in phrase)
+            int[] table = GetCharFrequencyTable();
+            foreach (char c in phrase.ToCharArray())
             {
                 int x = GetCharNumber(c);
                 if (x != -1)
@@ -50,7 +53,8 @@ namespace Chapter01
 
         public static bool IsPermutationOfPalindrome(String phrase)
         {
-            int[] table = BuildCharFrequencyTable(phrase);
+            string lowerCasePhrase = phrase.ToLower();
+            int[] table = BuildCharFrequencyTable(lowerCasePhrase);
             return CheckMaxOneOdd(table);
         }
 
@@ -60,9 +64,10 @@ namespace Chapter01
 
         public static bool IsPermutationOfPalindrome2(String phrase)
         {
+            string lowerCasePhrase = phrase.ToLower();
             int countOdd = 0;
-            int[] table = new int[26];
-            foreach (char c in phrase.ToCharArray())
+            int[] table = GetCharFrequencyTable();
+            foreach (char c in lowerCasePhrase.ToCharArray())
             {
                 int x = GetCharNumber(c);
                 if (x != -1)
@@ -79,6 +84,11 @@ namespace Chapter01
                 }
             }
             return countOdd <= 1;
+        }
+
+        private static int[] GetCharFrequencyTable()
+        {
+            return new int[(int)'z' - (int)'a' + 1];
         }
 
         #endregion Solution 2
@@ -105,10 +115,10 @@ namespace Chapter01
         /* Create bit vector for string. For each letter with value i,
          * toggle the ith bit. */
 
-        public static int MarkBitForOddCharacterCount(String phrase)
+        public static int CreateBitVector(String phrase)
         {
             int bitVector = 0;
-            foreach (char c in phrase.ToCharArray())
+            foreach (char c in phrase.ToLower().ToCharArray())
             {
                 int x = GetCharNumber(c);
                 bitVector = Toggle(bitVector, x);
@@ -126,13 +136,13 @@ namespace Chapter01
 
         public static bool IsPermutationOfPalindrome3(String phrase)
         {
-            int bitVector = MarkBitForOddCharacterCount(phrase);
+            int bitVector = CreateBitVector(phrase);
             return bitVector == 0 || CheckExactlyOneBitSet(bitVector);
         }
 
         #endregion Solution 3
 
-        public override void Run()
+        public void Run()
         {
             String[] strings = {"Rats live on no evil star",
                             "A man, a plan, a canal, panama",
